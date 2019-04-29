@@ -1,0 +1,14 @@
+# O que é uma promise?
+
+- um objeto
+- que desacopla três partes envolvidas:
+  1. o código cliente (quem faz a requisição do serv)
+  2. o código provedor (quem tenta atender à requisição)
+  3. o código consumidor (quem vai processar o resultado)
+
+concretamente
+- um objeto promise provê:
+  1. um método then
+  2. um método catch
+  3. um método finally
+  4. todos os métodos acima retornam outra promise
