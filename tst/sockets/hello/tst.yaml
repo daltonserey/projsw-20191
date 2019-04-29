@@ -1,0 +1,6 @@
+name: hello
+label: Hello World!
+text: hello.md
+include:
+- hello.py, public, rw
+- hello2.py, public, rw

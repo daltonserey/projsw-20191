@@ -1,0 +1,7 @@
+name: threads
+label: Introdução a Threads com Python
+text: threads.md
+include:
+- README.md, public, rw
+- mthreads.py, public, rw
+- mthreads2.py, public, rw

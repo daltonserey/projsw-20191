@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Exercícios ProjSW</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="estilo.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header>
+<h1 class="title">Exercícios ProjSW</h1>
+</header>
+<h2 id="introdução-a-html-css-javascript">Introdução a HTML, CSS &amp; JavaScript</h2>
+<h3 id="exercícios">Exercícios</h3>
+<ol type="1">
+<li><p>Crie uma página pessoal no servidor Apache no LCC. Para isso, siga as instruções a seguir:</p>
+<ol type="a">
+<li><p>crie um diretório <code>public_html</code> dentro de seu diretório <em>home</em> de sua conta no LCC; é possível que um diretório já tenha sido criado pela administração, quando o Apache foi instalado;</p></li>
+<li><p>certifique-se que as permissões de acesso ao diretório autorizem outros usuários a “<em>entrar</em>” e a ler o conteúdo do diretório; se não tiver certeza, digite o comando <code>chmod 755 public_html</code> (você deve estar no seu diretório <em>home</em>);</p></li>
+<li><p>faça o mesmo com o seu diretório <em>home</em>; para que o servidor Apache possa ler seus dados, é necessário que ele tenha permissão de entrar no seu diretório <code>public_html</code> e isso inclui <em>passar</em> pelo seu diretório <em>home</em>; não se preocupe, a permissão é apenas para passar e ler, não para escrever; digite o comando <code>chmod 755 ~</code>;</p></li>
+<li><p>se tudo estiver certo, você já deve conseguir acessar o conteúdo de seu diretório através de qualquer browser, através da internet; para testar, abra um <em>browser</em> e coloque a url de sua página que terá a forma <code>http://kirk.lcc.ufcg.edu.br/~dalton/</code>; você só deve trocar o nome do meu login no LCC, <code>dalton</code>, pelo seu próprio login; você deve ver apenas uma página gerada automaticamente pelo Apache bem ao estilo do que vimos em sala de aula quando usamos o mini servidor de Python que é uma espécie de <em>índice</em> criado automaticamente pelo Apache, com base no conteúdo do diretório;</p></li>
+</ol></li>
+<li><p>Adicione alguns arquivos ao diretório <code>public_html</code> (nenhum deles deve ser nomeado <code>index.html</code>, deixe isso pros próximos passos). Mas cuidado, lembre-se que esses arquivos ficarão publicamente disponíveis na internet para qualquer usuário.</p></li>
+<li><p>Crie também um subdiretório. Escolha o nome você mesmo, mas evite nomes com espaços ou acentuação. Observe que você pode acessar esse diretório simplesmente adicionando uma barra e o nome do diretório ao final da url de sua página. Observe também que o Apache irá criar uma página índice para esse diretório também, tal como ocorreu com o diretório base.</p></li>
+<li><p>Crie um arquivo <code>index.html</code> (vazio) no diretório <code>public_html</code> (você pode usar o comando <code>touch index.html</code> para criar esse arquivo vazio). Observe que ao fazer isso, mesmo que o arquivo seja vazio, o Apache deixa de criar o <em>índice automático</em> que você viu nos passos anteriores. Agora o <em>índice</em> da página pode ser controlado por você, editando o arquivo <code>index.html</code> da forma que você achar mais conveniente.</p>
+<blockquote>
+<p>Observe que ao usarmos a url dos subdiretórios criados no passo anterior, o Apache continuará funcionando como antes, criando um índice automático. Isso ocorre porque esse é o comportamento <em>default</em> do Apache. Para mudar o conteúdo de um subdiretório, simplesmente adicione outro arquivo <code>index.html</code> dentro do subdiretório.</p>
+<p>O mesmo ocorre com os arquivos que estiverem em <code>public_html</code>. Eles continuam acessíveis pelo browser. A diferença é que agora você precisa saber a url para poder acessá-los, já que não há um índice com o link.</p>
+</blockquote></li>
+<li><p>Edite o arquivo <code>index.html</code> para fazer uma simples página pessoal. Esse arquivo deve ser um simples arquivo HTML5 (estritamente válido) que defina em sua página as partes clássicas de uma página web: cabeçalho, rodapé, área de navegação e uma área para o conteúdo principal. Coloque o que quiser dentro de cada uma delas, mas observe o bom uso das tags semânticas de HTML5 (se decidir usar figuras, siga também as convenções de HTML semântico). No corpo principal, adicione conteúdo que identifique você pessoalmente e seus interesses. Pesquise sobre CSS e faça um arquivo de estilos para sua página.</p></li>
+<li><p>Crie o subdiretório <code>imc</code>. Dentro dele, recrie o mini app que fizemos em sala de aula que calcula o IMC de uma pessoa. Contudo, desta vez, adicione um comportamento. O app deve informar se a pessoa se encontra abaixo ou acima do peso sugerido pelas recomendações de saúde. Adicione um css à página.</p></li>
+</ol>
+</body>
+</html>

@@ -1,0 +1,4 @@
+GET /~dalton/projsw-20181/hello/backend/servidor.js HTTP/1.1
+Host: www.dsc.ufg.edu.br
+
+

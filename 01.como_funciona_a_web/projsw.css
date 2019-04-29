@@ -1,0 +1,63 @@
+pre {
+  font-size: 15px;
+  background: #eef;
+  padding: 1em;
+}
+
+figure {
+  text-align: center;
+  margin: 2em;
+}
+
+figcaption {
+  text-align: center;
+}
+
+html {
+    background: lightgray;
+    display: grid;
+    font-family: Roboto, Helvetica Neue, sans-serif;
+    letter-spacing: -.00278rem;
+    line-height: 1.4;
+}
+
+p > code, li > code {
+    color: #15b;
+    background: #eee;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+li {
+    margin: 6px;
+}
+
+blockquote {
+    color: #777;
+    border-left: 10px solid blue;
+    font-size: 90%;
+    margin: 0;
+    padding-left: 1em;
+}
+
+body {
+    justify-self: center;
+    background: white;
+    margin: 20px;
+    padding: 6em;
+    width: 660px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
+}
+
+h2 {
+    margin: 20px 0 0 0;
+    font-size: 1.3rem;
+}
+
+p {
+    margin: 12px 0 0 0;
+}
+
+ol, ul {
+    margin: 12px 0 0 16px;
+}

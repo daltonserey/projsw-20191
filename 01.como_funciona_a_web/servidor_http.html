@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Um mini servidor HTTP</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="projsw.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header>
+<h1 class="title">Um mini servidor HTTP</h1>
+</header>
+<h1 id="um-minúsculo-servidor-http">Um minúsculo servidor HTTP</h1>
+<p>Neste roteiro, escreveremos um pequeno servidor HTTP que servirá alguns dados estáticos lidos do sistema de arvivos, bem como alguns dados dinâmicos. O servidor terá poucos recursos e reconhecerá pouquíssimos verbos em cada um deles. Mas deve ser o suficiente, para melhorar seu entendimento do funcionamento do protocolo e dos dois principais componentes da web: clientes e servidores.</p>
+<h2 id="servidor-base">Servidor Base</h2>
+<p>O nosso primeiro servidor deve apenas atender a um <code>GET</code> no recurso base <code>/</code>. A resposta será uma mensagem simples em texto pleno (mime type <code>text/plain</code>). Além disso, nesta primeira versão, ele não será sequer multi-threaded. O servidor deve apenas atender a uma conexão TCP e aceitar um <em>request</em> mínimo no seguinte formato:</p>
+<pre><code>GET / HTTP/1.1
+Host: www.example.com
+Connection: close
+</code></pre>
+<p>Observe dois detalhes do <em>request</em> acima: i) ao final de cada linha, o protocolo http exige o uso de <code>\r\n</code>, mas nosso servidor irá tolerar o uso de apenas <code>\n</code>, embora tenha que aceitar o <code>\r\n</code> também (veja que Python facilita sua vida nesse sentido); ii) ao final dos <em>headers</em> é obrigatória a presença de uma linha em branco (ou seja, dois grupos de <code>\r\n</code> seguidos). Depois disso, tudo o que se seguir é o corpo da mensagem.</p>
+<p>Escreva o código do servidor que receba uma conexão HTTP e que dado um <em>request</em> qualquer separe a mensagem em todas as partes que compõem o <em>request</em>: i) verbo, recurso, protocolo (os três obtidos da primeira linha da mensagem e representados em Python por strings); ii) os <em>headers</em> representados por um dicionário Python em que chaves são os <em>nomes</em> e os valores são os <em>valores</em> dos <em>headers</em>; e iii) o corpo da mensagem, representado também como uma string Python. Todos os dados devem ser estruturados em um objeto ou em um simples dicionário Python. Escreva o código que faz essa decomposição em uma função chamada <code>parse_request(mensagem)</code>que recebe a mensagem recebida via socket. Se a função não “conseguir” fazer o parsing, deve retornar <code>None</code> ou lançar uma exceção, de forma que o código cliente saiba que a mensagem está mal formada ou não é HTTP.</p>
+<p>O código principal deve fazer o <em>parsing</em> da mensagem usando a função acima descrita. Com o objeto retornado, o código principal deve verificar se está tudo ok. Primeiro, o verbo deve ser <code>GET</code>, segundo o recurso deve ser <code>/</code> (o protocolo deve ser <code>HTTP/1.1</code>, mas nós vamos simplesmente ignorá-lo). Para casos diferentes disso, o servidor deve gerar <em>responses</em> de erro. O conteúdo da mensagem, contudo, pode variar. Se o método não for <code>GET</code>, o <em>response</em> deve ter <a href="https://www.restapitutorial.com/httpstatuscodes.html"><em>status code</em></a> 405, para indicar que aquele método não é permitido. E se o recurso não for <code>/</code> o <em>response</em> deve ter <em>status code</em> 404, indicando que o recurso não existe ali. Se, contudo, esses dados estiverem corretos, vamos produzir um <em>response</em> com <em>status code</em> 200, para indicar que o recurso existe naquele servidor e que tudo ocorreu bem. O corpo do <em>response</em> no caso de tudo estar ok deve ser simplesmente uma mensagem do tipo</p>
+<pre><code>Este é o conteúdo do recurso &quot;/&quot; neste servidor.</code></pre>
+<p>Observe que esse texto contém caracteres acentuados. Logo, é importante adicionar o <em>header</em> apropriado na resposta. Neste caso, trata-se do <em>header</em> <code>Content-type</code> que deve ter o valor <code>text/html; charset=utf-8</code>. Observe que o valor indica tanto o mime type (<code>text/html</code>), quanto o conjunto de caracteres que, neste caso, é <code>utf-8</code>.</p>
+<h3 id="testes">Testes</h3>
+<p>Para testar esse servidor, faça a conexão inicialmente pelo <code>netcat</code> (ou <code>nc</code> no Mac). Em seguida, conecte-se usando um <em>browser</em>. Lembre de colocar o endereço, incluindo a porta. Mude a url e veja se o servidor responde corretamente quando um recurso inexistente é pedido. Também veja se os caracteres são devidamente mostrados pelo <em>browser</em>, quando o único recurso existente é visualizado. Lembre-se, isso depende da presença correta do <em>header</em> acima mencionado.</p>
+<h2 id="servidor-de-arquivos">Servidor de arquivos</h2>
+<p>Evolua o servidor para que ele busque arquivos armazenados no diretório em que foi executado com o mesmo nome do recurso. Se o arquivo existir, leia o arquivo e retorne seu conteúdo no corpo do <em>response</em>. Se não existir, retorne um 404. Para testar, inclua alguns arquivos de texto simples no diretório e veja se consegue visualizar seu conteúdo pelo <em>browser</em>. Teste também com arquivos com extensão <code>.html</code>. Provavelmente, funcionará, mas não da forma que você espera… o html pode não ser devidamente interpretado pelo <em>browser</em> por causa do <em>header</em> <code>Content-type</code>.</p>
+<p>Evolua novamente seu servidor. Agora, se o arquivo enviado tiver extensão <code>.html</code>, faça com que o <code>Content-type</code> seja apropriado para html (faça uma pesquisa na internet para descobrir o mim type apropriado).</p>
+</body>
+</html>

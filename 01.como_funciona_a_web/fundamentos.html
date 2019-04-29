@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Fundamentos Web</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="projsw.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header>
+<h1 class="title">Fundamentos Web</h1>
+</header>
+<h1 id="fundamentos-processos-sockets-e-threads">Fundamentos: Processos, Sockets e Threads</h1>
+<p>O objetivo deste roteiro é que você tenha algum contato com processos, sockets, conexões internet e threads, enquanto conceitos fundamentais para uma plena compreensão da web. Para isso, neste roteiro, vamos experimentar esses conceitos usando as APIs da biblioteca padrão de Python 3. Ao final, terá os elementos necessários para construir, por conta própria, um minúsculo servidor http.</p>
+<h2 id="python">Python</h2>
+<p>Neste roteiro, utilizaremos Python 3. Observe, contudo, que as mesmas funcionalidades poderiam ser escritas em praticamente qualquer linguagem moderna: C, C++, Java, etc (muito embora, a API possa mudar). Em nosso caso, usaremos o módulo <code>sockets</code> de Python.</p>
+<h2 id="clientes">Clientes</h2>
+<p>Usaremos, inicialmente, o cliente universal para testar e desenvolver servidores é o <code>netcat</code> (você também poderia usar o histórico <code>telnet</code>). Contudo, quando progredirmos para uma versão minimamente funcional de servidor http, você deve passar a utilizar um <em>browser</em>. Observe que <em>browsers</em> são clientes web universais: são capazes de emitir <em>requests</em> e interpretar <em>responses</em> http.</p>
+<h2 id="sockets-em-python">Sockets em Python</h2>
+<p>A escrita de um servidor que usa sockets python deve seguir um roteiro bem estabelecido de chamadas à API. Os métodos invocados são:</p>
+<ul>
+<li><code>socket()</code> para instanciar um novo <em>socket</em>;</li>
+<li><code>bind()</code> para ligar o socket ao endereço e porta desejados;</li>
+<li><code>listen()</code> para iniciar o servidor e deixá-lo “ouvindo” conexões</li>
+<li><code>accept()</code> para “aceitar” uma conexão iniciada e criar o socket de interação; e</li>
+<li><code>close()</code> para fechar um conexão, após concluir seu uso.</li>
+</ul>
+<p>Sugiro uma lida rápida na <a href="https://docs.python.org/3/library/socket.html">documentação de sockets</a>. Retorne a ela sempre que tiver dúvidas do que está ocorrendo e de como as coisas funcionam.</p>
+<h2 id="tst">TST</h2>
+<p>Para facilitar a distribuição de atividades e exemplos do curso, vamos usar o <a href="https://github.com/daltonserey/tst">tst</a> (na verdade, também me será útil para testar uma nova versão do tst que independe do antigo tst-online). Para isso, desinstalate sua versão antiga do tst:</p>
+<pre><code>$ mv ~/.tst ~/.tst-old</code></pre>
+<p>E, em seguida, siga as instruções do site e instale o tst em suas contas pessoais onde pretenda estudar (lembre, use ambientes Linux ou Mac). Em seguida, faça um teste do <code>tst</code>. Faça o download da atividade <code>hello</code>, digitando o seguinte comando em um terminal):</p>
+<pre><code>tst checkout hello</code></pre>
+<blockquote>
+<p>IMPORTANTE: para os que ainda se lembram do <em>workflow</em> do tst em Programação 1, observe que você não precisa (nem deve) fazer login, já que as atividades não são armazenadas no servidor. Elas estão públicas na web.</p>
+</blockquote>
+<p>O comando acima irá criar um diretório <code>hello</code> contendo os arquivos necessários para a atividade. Como não se trata de um servidor fechado, nestas atividades também não há como fazer commits. A ideia é apenas que você possa baixar os exemplos e fazer as atividades. Várias atividades da disciplina serão distribuídas desta forma.</p>
+<h3 id="cadastre-o-site-da-disciplina">Cadastre o site da disciplina</h3>
+<p>O site de onde o tst baixou o exemplo acima é o site demo do tst. Para que você possa baixar atividades da disciplina, deve editar o arquivo <code>~/.tst/config.yaml</code> e adicionar os dados do site de nossa disciplina. Para isso, adicione uma site, contendo os seguintes dados:</p>
+<pre><code>sites:
+- name: projsw
+  url: http://www.dsc.ufcg.edu.br/~dalton/projsw/tst
+
+- name: demo
+  url: https://raw.githubusercontent.com/daltonserey/tst-demo/master</code></pre>
+<p>Observe que o site <code>demo</code> já existirá no arquivo. Assim, basta que você adicione os dados do site <code>projsw</code> acima. Importante: você deve colocar o novo site antes do site <code>demo</code>. Isso garante que o <code>tst</code> irá buscar as atividades em nosso site antes.</p>
+<p>Uma vez configurado o tst, você já poderá baixar os exemplos e exercícios iniciais desta aula, digitando:</p>
+<pre><code>$ tst checkout sockets</code></pre>
+<p>Isso deve criar o diretório <code>sockets</code> contendo os vários exemplos que usaremos no restante deste roteiro.</p>
+<h2 id="hello-world-de-novo"><em>Hello, World!</em> de novo…</h2>
+<p>Para facilitar o entendimento, segue um servidor mínimo escrito em python. A única coisa que ele faz é aceitar uma conexão e responder ‘Hello, World!’ através da conexão estabelecida.</p>
+<h3 id="sequência-de-passos">Sequência de passos</h3>
+<ol type="1">
+<li><p>Entre no diretório <code>sockets/hello</code>. Leia o código antes de executá-lo e tente entender seu funcionamento. É bastante simples e intuitivo (além de ter comentários que o explicam passo a passo).</p></li>
+<li><p>Para executar o servidor, digite <code>python3 hello.py</code>. Observe que o servidor é iniciado e o código bloqueia na linha referente ao <code>accept()</code>, aguardando por uma nova conexão.</p></li>
+<li><p>Em outro shell, use o <code>netcat</code> para contactar seu servidor, com o comando <code>netcat localhost 9090</code> (use <code>nc</code> se estiver em um Mac). Observe que ao estabelecer a conexão, o servidor <em>desbloqueia</em> a execução e continua a execução depois da linha do <code>accept()</code>.</p>
+<blockquote>
+<p>Observe que o retorno de <code>accept</code> é um par formado por um <em>socket</em> e um segundo par (tupla) a que chamamos de <code>endereco</code> no código. Esse par, por sua vez, é composto de um endereço IP e a porta usada para a conexão.</p>
+</blockquote></li>
+<li><p>Tente executar o servidor novamente. É bastante provável (mas não 100% garantido) que a inicialização do servidor não tenha funcionado, porque o endereço já está em uso (mensagem <code>OSError: [Errno 48] Address already in use</code>). Para fazer o servidor funcionar imediatamente, adicione um número de porta diferente na linha de comando (lembre, acima de 1024, para usar uma porta não reservada).</p>
+<blockquote>
+<p>Este erro reforça a observação de que um socket é, na verdade, um recurso provido pelo sistema operacional… e que, neste caso, ainda ele não foi liberado. Se você repetir a operação alguns segundos depois é provável que volte a funcionar, já que o sistema operacional terá liberado o uso da porta.</p>
+</blockquote></li>
+</ol>
+<p>Antes de prosseguir, releia o código do servidor. Observe que há dois objetos que são <em>sockets</em>. Um é o socket do servidor propriamente dito que é onde ele ouve pedidos de conexão (<code>s</code> no código) e o outro é o socket da conexão propriamente dita (<code>conexao</code> no código). Observe ainda que ambos os <em>sockets</em> devem ser fechados depois de usados. Por isso, é comum usarmos o <code>with</code> para usarmos sockets. O arquivo <code>hello2.py</code> mostra um servidor com a mesma funcionalidade, mas em que uso o <code>with</code> para garantir que o socket é fechado.</p>
+<blockquote>
+<p>Observe que o uso de <em>sockets</em> aqui é meramente para permitir a compreensão do mecanismo e não das melhores práticas de <em>sockets</em> em Python. Há muito mais opções e detalhes que é importante conhecer para construir um servidor profissional em python.</p>
+</blockquote>
+<h2 id="echo-server"><em>Echo Server</em></h2>
+<p>Um segundo exemplo clássico do aprendizado de <em>sockets</em> é o que se chama de <em>servidor de eco</em>. Trata-se de um servidor que apenas devolve (ecoa) uma cópia de todas as mensagens recebidas para o processo que o contactou. Para implementá-lo, precisamos saber apenas dois métodos adicionais de <em>sockets</em>:</p>
+<ul>
+<li><code>recv()</code> para receber dados do <em>socket</em> (bloqueante)</li>
+<li><code>sendall()</code> para enviar dados pelo <em>socket</em> (bloqueante)</li>
+</ul>
+<blockquote>
+<p>Um socket python pode ser configurado para permitir o envio e a recepção de dados em modo <em>não bloqueante</em>. Em nosso exemplo, usaremos apenas o modo bloqueante (que é o <em>default</em>).</p>
+</blockquote>
+<ol type="1">
+<li><p>Entre no diretório <code>sockets/echo</code>. Leia o código antes de executá-lo e tente entender seu funcionamento. É bastante simples e intuitivo. Desta vez, não há comentários, mas entendo que é suficientemente auto-explicativo.</p></li>
+<li><p>Para executar o servidor, digite <code>python3 echo.py</code>. Observe que o servidor é iniciado e que, mais uma vez, o código bloqueia na linha referente ao <code>accept()</code>, aguardando por uma nova conexão.</p></li>
+<li><p>Em outro shell, use o <code>netcat</code> para contactar seu servidor, com o comando <code>netcat localhost 9090</code> (use <code>nc</code> se estiver em um Mac). Escreva mensagens no cliente (no <em>netcat</em>) e observe que a cada <code>Enter</code> as mensagens são enviadas ao servidor. O servidor, por sua vez, as recebe, imprime (no terminal do servidor) e as envia de volta para o cliente.</p>
+<blockquote>
+<p>Observe que o método <code>recv()</code> tem o valor 4096 como parâmetro. Varie o seu valor para 1 e experimente o servidor dessa forma, para entender o seu significado. Em seguida, leia a documentação de <a href="https://docs.python.org/3/library/socket.html#socket.socket.recv">recv</a>.</p>
+</blockquote></li>
+<li><p>Para encerrar a comunicação, observe que o servidor testa se <code>not mensagem</code> é verdadeiro o que só é verdade quando <code>recv</code> retornar uma <em>string</em> vazia de bytes (<code>b''</code> em python). Observe ainda que ao digitar apenas <code>&lt;Enter&gt;</code> do lado cliente, um <code>\n</code> ainda é enviado para o servidor o que não termina sua execução. Para concluir o uso do <code>netcat</code> indique o fim do arquivo com um <code>EOF</code> (Ctrl-D em linux e mac ou Ctrl-Z em Windows).</p></li>
+</ol>
+<blockquote>
+<p>Exercício 1. Sem copiar e colar o código de nenhum dos dois servidores vistos, tente criar um servidor chamado <code></code>echocaps.py` que ecoa mensagens recebidas do cliente em letras maiúsculas. Tente apenas relembrar os aspectos principais do código. É bastante provável que você não lembre de alguns detalhes. Depois de fazer uma tentativa inicial, releia os servidores e complemente o seu para fazê-lo funcionar corretamente.</p>
+</blockquote>
+<blockquote>
+<p>Exercício 2. Execute o servidor em uma máquina diferente (via ssh, por exemplo). Em seguida, contacte o servidor a partir de sua máquina de origem (ou de outra qualquer). Observe que você você deve usar uma porta liberada para uso nas redes pelas quais os dados irão trafegar. Você vai precisar usar <code>socket.gethostbyname(socket.gethostname())</code> para conseguir o IP do servidor. Observe que esse é o IP local, não o público.</p>
+</blockquote>
+<h2 id="threads-em-python">Threads em Python</h2>
+<p>Em sua forma básica, cada processo tem uma única <em>thread</em> de execução. Isto é, uma única linha do código está sendo executada em qualquer dado momento da <em>vida</em> do processo. Contudo, a maioria dos sistemas operacionais permite que um único processo tenha mais de uma <em>thread</em> executando “simultaneamente”. Na prática, o sistema operacional irá fazer <em>multi-tasking</em> entre as threads de forma semelhante à que já faz com processos. Ou seja, em um sistema com uma única CPU apenas um thread estará efetivamente executando a cada instante de tempo. Como o sistema operacional, contudo, alterna a execução entre as <em>threads</em> com frequência, a impressão do usuário é a de que eleas executam de forma efetivamente ao mesmo tempo e de forma independente.</p>
+<p>Servidores http são tipicamente multi-threaded. Isso permite que o servidor interaja com uma conexão existente, enquanto permanece ouvindo uma porta à espera de novas conexões. Da mesma forma, permite até que múltiplas conexões de diferentes clientes sejam atendidas simultaneamente. Nesta seção veremos uma brevíssima introdução à API de <em>threads</em> de Python 3.</p>
+<blockquote>
+<p>Relembre que o objetivo deste material não é o de se aprofundar nas tecnologias específicas de Python, mas o de lhe oferecer uma experiência prática com os conceitos importantes para a compreensão da arquitetura web. Tanto <em>sockets</em>, quanto <em>threads</em> são tecnologias com muito mais a se considerar para um uso profissional. Para nossos propósitos, contudo, uma breve introdução é suficiente.</p>
+</blockquote>
+<p>Python e outras linguagens de alto nível permitem escrever código <em>multi-threaded</em> com bastante facilidade. Com Python 3, usaremos o módulo <code>threading</code> e, em particular, o objeto/classe <code>Thread</code> nele oferecido. Esse objeto pode ser usado de duas formas:</p>
+<ol type="1">
+<li><p>Pode-se instanciar um objeto diretamente de <code>Thread</code>, passando como argumento uma função como parâmetro e invocando <code>start()</code>. Quando <code>start()</code> é invocado, uma nova <em>thread</em> é criada junto ao sistema operacional e a função passada como parâmetro é definida como o código a ser executado pela <em>thread</em>.</p></li>
+<li><p>Pode-se extender a classe <code>Thread</code> com uma classe que tenha o método <code>run()</code>. Em seguida, se instancia a classe e se invoca o método <code>start()</code> (herdado de <code>Thread</code>) nos objetos instanciados.</p></li>
+</ol>
+<h3 id="contadores-em-threads">Contadores em Threads</h3>
+<p>Para entendermos melhor o conceito, usaremos um exemplo bastante simples: contadores em <em>threads</em>. A ideia é que possamos criar contadores que tenham seu próprio intervalo de atualização e que funcionem independentemente do restante do programa.</p>
+<ol type="1">
+<li><p>Para isso, baixe a atividade <code>threads</code> pelo tst. Use o comando <code>tst checkout threads</code>. Lembre-se que isso irá criar um diretório dentro do diretório em que o comando for executado. Assim, escolha antes onde quer que a atividade seja gravada.</p></li>
+<li><p>Entre no diretório <code>threads</code> e antes de executar o programa, leia o código do script <code>mthreads.py</code>. Tente entender e prever como irá funcionar. Explique o que você acha que irá ver na saída do programa, quando ele for executado.</p></li>
+<li><p>Execute o programa <code>mthreads.py</code>. Para isso, use o comando <code>python3 mthreads.py</code>. O programa criará dois contadores que funcionam “simultaneamente” (em <em>threads</em>) e cada um com seu próprio intervalo de atualização.</p></li>
+</ol>
+<blockquote>
+<p><strong>Observe</strong> a relação de ordem entre as mensagens impressas e a posição dos respectivos <code>print</code>s no código. Perceba que a ordem pode não ser intuitiva. Por exemplo, por que a mensagem <code>Fim</code> não aparece ao fim de toda a execução?</p>
+</blockquote>
+<ol start="4" type="1">
+<li><p>Observe que <code>mthreads.py</code> foi escrita usando um estilo funcional (não há classes no código). As threads são criadas (instanciadas) diretamente de <code>Thread</code> e imediatamente iniciadas por <code>start()</code>.</p></li>
+<li><p>O script <code>mthreads2.py</code> tem o mesmo efeito que o primeiro script. A diferença é o estilo usado. Neste caso, usamos algo mais orientado a objetos: extendemos a classe <code>Thread</code> e implementamos o método <code>run()</code>. Cabe a você escolher qual o estilo mais apropriado para o problema em questão.</p></li>
+</ol>
+<blockquote>
+<p>Exercício 3. Nada impede instanciar e iniciar as <em>threads</em> em momentos diferentes. Para isso, teríamos que ter feito uma atribuição na instanciação da <em>thread</em> e depois ter usado o método <code>start()</code>.</p>
+</blockquote>
+<h2 id="mini-chat">Mini chat</h2>
+<blockquote>
+<p>Exercício 4. Escreva um mini chat, tal como especificado abaixo.</p>
+</blockquote>
+<p>Para este exercício você precisa apenas de um servidor, porque como cliente usaremos o <code>netcat</code>. A ideia para permitir que vários usuários troquem mensagens em um chat é conectar todos os clientes a um servidor central. Dessa forma, cada mensagem deve ser enviada de um cliente ao servidor e este a repassará para todos os clientes conectados.</p>
+<p>Seu servidor deve ter uma <em>thread</em> principal responsável por “escutar” pedidos de conexão e por instanciar e inicializar uma nova <em>thread</em> para cada cliente conectado. A função a ser executada pela <em>thread</em> deve adicionar o socket a uma estrutura de dados (uma lista ou dicionário) e deve ficar à espera por mensagens enviadas pelo cliente. A cada nova mensagem recebida, deve enviar uma cópia da mensagem para cada conexão presente na estrutura de dados.</p>
+<p>O comando/mensagem especial <code>:bye</code> deve poder ser usado por qualquer cliente/usuário para desconectar-se do chat. Quando um <code>:bye</code> for recebido, o socket do cliente é fechado, uma mensagem de saída é enviada para todos os usuários, o seu <em>socket</em> é retirado da estrutura de dados e a <em>thread</em> correspondente é encerrada.</p>
+</body>
+</html>

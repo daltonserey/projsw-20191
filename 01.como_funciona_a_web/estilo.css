@@ -1,0 +1,44 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: gray;
+}
+
+body {
+  background: white;
+  margin: 20px;
+  padding: 80px;
+  font-family: sans-serif;
+  font-size: 24px;
+}
+
+main {
+  margin: 20px 0 20px 0;
+  display: grid;
+  grid-template-columns: min-content 1fr 1fr;
+  grid-template-areas: 
+    "text1 input1 result"
+    "text2 input2 msg";
+  grid-column-gap: 1em;
+  grid-row-gap: 10px;
+}
+
+main input {
+  background: #eef;
+  font-size: 24px;
+}
+
+#imc {
+  grid-area: result;
+  justify-self: center;
+}
+
+#classificacao {
+  grid-area: msg;
+  justify-self: center;
+  color: gray; 
+  font-size: 80%;
+}

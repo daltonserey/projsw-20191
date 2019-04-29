@@ -1,0 +1,9 @@
+name: sockets
+label: Sockets
+text: sockets.md
+include:
+- hello/README.md, public, rw
+- hello/hello.py, public, rw
+- hello/hello2.py, public, rw
+- echo/README.md, public, rw
+- echo/echo.py, public, rw
