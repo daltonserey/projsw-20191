@@ -1,0 +1,16 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    background: gray;
+}
+
+body {
+    margin: 20px;
+    background: white;
+    padding: 20px;
+}
+
+main > p {
+    color: #77c;
+    font-family: arial;
+}

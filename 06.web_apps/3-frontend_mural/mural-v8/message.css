@@ -1,0 +1,26 @@
+:host {
+    background: #bfb;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 2px;
+    display: grid;
+    grid-template-areas:
+        "message message"
+        "at      author";
+    grid-gap: 10px;
+}
+p, time {
+    margin: 0;
+    color: gray;
+}
+p.message {
+    grid-area: message;
+    color: navy;
+}
+p.author {
+    grid-area: author;
+    justify-self: end;
+}
+time.at {
+    grid-area: at;
+}
