@@ -14,4 +14,4 @@ receba notificações de adições/modificações dos arquivos.
 
 ## Conteúdo
 
-- [Web Apps](06.web_apps/text.md)
+- [Web Apps](06.web_apps/text.md)ty
